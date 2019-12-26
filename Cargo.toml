@@ -1,0 +1,13 @@
+[package]
+name = "gtikz"
+version = "0.1.0"
+authors = ["pgw <pg999w@gmail.com>"]
+edition = "2018"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+clap = "*"
+
+nom = "5"
+tinytemplate = "*"
