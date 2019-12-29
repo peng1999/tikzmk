@@ -8,6 +8,11 @@ edition = "2018"
 
 [dependencies]
 clap = "*"
+log = "*"
+anyhow = "*"
+env_logger = "*"
+serde = { version = "*", features = ["derive"] }
 
+regex = "*"
 nom = "5"
 tinytemplate = "*"

@@ -1,3 +1,4 @@
+use serde::Serialize;
 use nom::{
     branch::alt,
     bytes::complete::tag,
@@ -7,14 +8,14 @@ use nom::{
     IResult,
 };
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Serialize)]
 pub struct Header {
     tikz_library: Vec<String>,
     package: Vec<String>,
 }
 
 impl Header {
-    fn new() -> Header {
+    pub fn new() -> Header {
         Header {
             tikz_library: vec![],
             package: vec![],
@@ -26,10 +27,6 @@ impl Header {
 enum Item {
     TikzLibrary(String),
     Package(String),
-}
-
-fn prefix(input: &str) -> IResult<&str, (&str, &str)> {
-    pair(tag("%%"), space1)(input)
 }
 
 fn colon(input: &str) -> IResult<&str, (&str, &str, &str)> {
@@ -64,9 +61,12 @@ fn package(input: &str) -> IResult<&str, Vec<Item>> {
 }
 
 fn header_line(input: &str) -> IResult<&str, Vec<Vec<Item>>> {
-    let component = alt((tikz_library, package));
-    let (input, _) = prefix(input)?;
-    let (input, items) = separated_list(space1, component)(input)?;
+    let component = |input| {
+        let (input, _) = space1(input)?;
+        alt((tikz_library, package))(input)
+    };
+    let (input, _) = tag("%%")(input)?;
+    let (input, items) = many0(component)(input)?;
     let (input, _) = pair(space0, tag("\n"))(input)?;
     Ok((input, items))
 }
@@ -130,6 +130,7 @@ fn test_header() {
     assert_eq!(
         header(
             r#"%% tikzlibrary: calc, decorate
+%%
 %% package:ctex  tikzlibrary: arrows
 "#
         ),
