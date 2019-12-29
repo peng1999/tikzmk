@@ -1,5 +1,5 @@
 [package]
-name = "gtikz"
+name = "tikzmk"
 version = "0.1.0"
 authors = ["pgw <pg999w@gmail.com>"]
 edition = "2018"
