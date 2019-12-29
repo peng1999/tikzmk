@@ -1,4 +1,3 @@
-use serde::Serialize;
 use nom::{
     branch::alt,
     bytes::complete::tag,
@@ -7,6 +6,7 @@ use nom::{
     sequence::{pair, tuple},
     IResult,
 };
+use serde::Serialize;
 
 #[derive(Debug, PartialEq, Serialize)]
 pub struct Header {
