@@ -156,6 +156,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "open"
+version = "1.3.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "94b424e1086328b0df10235c6ff47be63708071881bead9e76997d9291c0134b"
+dependencies = [
+ "winapi",
+]
+
+[[package]]
 name = "proc-macro2"
 version = "1.0.6"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -317,6 +326,7 @@ dependencies = [
  "env_logger",
  "log",
  "nom",
+ "open",
  "regex",
  "serde",
  "tinytemplate",
