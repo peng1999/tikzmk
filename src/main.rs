@@ -1,7 +1,7 @@
 #![feature(matches_macro)]
 
 use anyhow::{anyhow, Context, Result};
-use clap::{App, Arg};
+use structopt::{StructOpt, };
 use env_logger::Env;
 use log::info;
 use std::{env, fs, path, process::Command};
@@ -9,29 +9,36 @@ use std::{env, fs, path, process::Command};
 mod parse;
 mod render;
 
+#[derive(Debug, StructOpt)]
+#[structopt(about = "TikZ preview tool")]
+struct Opt {
+    /// input file
+    #[structopt(index = 1, required = true)]
+    file_path: String,
+
+    /// compile file
+    #[structopt(short = "x", long)]
+    compile: bool,
+
+    /// TeX engine
+    #[structopt(short = "e", long, default_value = "xelatex")]
+    engine: String,
+
+    /// open a viewer
+    #[structopt(long, requires = "compile")]
+    open: bool,
+}
+
 fn main() -> Result<()> {
     env_logger::from_env(Env::default().default_filter_or("info")).init();
 
-    let matches = App::new("TikZ preview tool")
-        .arg(Arg::with_name("filepath").required(true).index(1))
-        .arg(Arg::with_name("compile").short("x").long("compile"))
-        .arg(
-            Arg::with_name("engine")
-                .short("e")
-                .long("engine")
-                .default_value("xelatex"),
-        )
-        .arg(Arg::with_name("open").long("open").requires("compile"))
-        .get_matches();
+    let opt = Opt::from_args();
 
-    let file_path = matches.value_of("filepath").unwrap();
-    let file_text = fs::read_to_string(file_path).context("Failed to read file")?;
+    let file_text = fs::read_to_string(&opt.file_path).context("Failed to read file")?;
     let rendered = render::render(&file_text);
 
-    if matches.is_present("compile") {
-        let engine = matches.value_of("engine").unwrap();
-        let shoud_open = matches.is_present("open");
-        write_tmp_and_compile(file_path, &rendered, engine, shoud_open)
+    if opt.compile {
+        write_tmp_and_compile(&opt.file_path, &rendered, &opt.engine, opt.open)
             .context("Failed to compile")?;
     } else {
         println!("{}", rendered);
