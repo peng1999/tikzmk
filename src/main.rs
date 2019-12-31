@@ -58,9 +58,9 @@ fn write_tmp_and_compile(
     fs::write(&tmp_dir, rendered).context("Failed to write file")?;
 
     info!("Running {}", engine);
-    let output = Command::new(engine)
-        .arg("-interaction")
-        .arg("batchmode")
+    let output = Command::new("texfot")
+        .arg(engine)
+        .arg("-interaction=nonstopmode")
         .arg(&tmp_name)
         .current_dir(&tmp_dir.parent().unwrap())
         .output()

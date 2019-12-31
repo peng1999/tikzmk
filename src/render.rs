@@ -15,7 +15,7 @@ const TEMPLATE: &str = r"\documentclass[tikz]\{standalone}{{for pkg in header.pa
 \usepackage\{{pkg}}{{endfor}}{{for lib in header.tikz_library}}
 \usetikzlibrary\{{lib}}{{endfor}}
 \begin\{document}
-{content}
+{content | unescaped}
 \end\{document}
 ";
 
@@ -82,6 +82,17 @@ fn test_render_bom() {
 \usetikzlibrary{calc}
 \begin{document}
 \abc{de}
+\end{document}
+";
+    assert_eq!(render(origin), rendered);
+}
+
+#[test]
+fn test_render_arrow() {
+    let origin = r"\abc[<->]";
+    let rendered = r"\documentclass[tikz]{standalone}
+\begin{document}
+\abc[<->]
 \end{document}
 ";
     assert_eq!(render(origin), rendered);
