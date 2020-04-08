@@ -17,3 +17,6 @@ regex = "*"
 nom = "5"
 tinytemplate = "*"
 open = "*"
+
+pest = "*"
+pest_derive = "*"

@@ -1,4 +1,7 @@
-#![feature(matches_macro)]
+#![cfg_attr(test, feature(matches_macro))]
+
+#[macro_use]
+extern crate pest_derive;
 
 use anyhow::{anyhow, Context, Result};
 use structopt::{StructOpt, };
@@ -8,6 +11,7 @@ use std::{env, fs, path, process::Command};
 
 mod parse;
 mod render;
+mod parse_pest;
 
 #[derive(Debug, StructOpt)]
 #[structopt(about = "TikZ preview tool")]

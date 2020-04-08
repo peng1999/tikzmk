@@ -1,0 +1,12 @@
+space0 = _{ " "* }
+space1 = _{ " "+ }
+colon = _{ space0 ~ ":" ~ space0 }
+
+header = { header_line+ }
+
+header_line = { "%%" ~ (tikz_library | package)* ~ space0 ~ NEWLINE }
+
+tikz_library = { space1 ~ "tikzlibrary" ~ colon ~ name ~ ( space0 ~ "," ~ space0 ~ name )* }
+package = { space1 ~ "package" ~ colon ~ name ~ ( space0 ~ "," ~ space0 ~ name )* }
+
+name = { ASCII_ALPHA+ }
