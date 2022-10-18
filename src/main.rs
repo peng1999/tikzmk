@@ -1,17 +1,20 @@
-#![cfg_attr(test, feature(matches_macro))]
-
-#[macro_use]
-extern crate pest_derive;
-
 use anyhow::{anyhow, Context, Result};
-use structopt::{StructOpt, };
 use env_logger::Env;
 use log::info;
 use std::{env, fs, path, process::Command};
+use structopt::StructOpt;
 
+#[cfg(all(feature = "pest", feature = "nom"))]
+compile_error!("Cannot have both pest and nom");
+
+#[cfg(feature = "pest")]
+use parse_pest as parse;
+#[cfg(feature = "pest")]
+mod parse_pest;
+
+#[cfg(feature = "nom")]
 mod parse;
 mod render;
-mod parse_pest;
 
 #[derive(Debug, StructOpt)]
 #[structopt(about = "TikZ preview tool")]
@@ -34,7 +37,7 @@ struct Opt {
 }
 
 fn main() -> Result<()> {
-    env_logger::from_env(Env::default().default_filter_or("info")).init();
+    env_logger::Builder::from_env(Env::default().default_filter_or("info")).init();
 
     let opt = Opt::from_args();
 

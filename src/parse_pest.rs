@@ -1,4 +1,5 @@
 use pest::{error::Error, Parser};
+use pest_derive::Parser;
 use serde::Serialize;
 
 #[derive(Parser)]
@@ -20,7 +21,7 @@ impl Header {
     }
 }
 
-pub fn header(input: &str) -> Result<Header, Error<Rule>> {
+pub fn header(input: &str) -> Result<(&str, Header), Error<Rule>> {
     let lines = HeaderParser::parse(Rule::header, input)?.next().unwrap();
     println!("{:#?}", lines);
     let mut header = Header::new();
@@ -43,7 +44,7 @@ pub fn header(input: &str) -> Result<Header, Error<Rule>> {
         }
     }
 
-    Ok(header)
+    Ok(("", header))
 }
 
 #[test]

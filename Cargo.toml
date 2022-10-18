@@ -2,7 +2,7 @@
 name = "tikzmk"
 version = "0.1.0"
 authors = ["pgw <pg999w@gmail.com>"]
-edition = "2018"
+edition = "2021"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
@@ -14,9 +14,14 @@ env_logger = "*"
 serde = { version = "*", features = ["derive"] }
 
 regex = "*"
-nom = "5"
 tinytemplate = "*"
 open = "*"
 
-pest = "*"
-pest_derive = "*"
+nom = { version = "5", optional = true }
+pest = { version = "*", optional = true }
+pest_derive = { version = "*", optional = true }
+
+[features]
+default = ["pest"]
+pest = ["dep:pest", "dep:pest_derive"]
+
