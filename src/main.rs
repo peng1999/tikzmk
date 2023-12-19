@@ -1,8 +1,8 @@
 use anyhow::{anyhow, Context, Result};
+use clap::Parser;
 use env_logger::Env;
 use log::info;
 use std::{env, fs, path, process::Command};
-use structopt::StructOpt;
 
 #[cfg(all(feature = "pest", feature = "nom"))]
 compile_error!("Cannot have both pest and nom");
@@ -16,30 +16,30 @@ mod parse_pest;
 mod parse;
 mod render;
 
-#[derive(Debug, StructOpt)]
-#[structopt(about = "TikZ preview tool")]
+#[derive(Debug, Parser)]
+#[command(about = "TikZ preview tool")]
 struct Opt {
     /// input file
-    #[structopt(index = 1, required = true)]
+    #[arg(index = 1, required = true)]
     file_path: String,
 
     /// compile file
-    #[structopt(short = "x", long)]
+    #[arg(short = 'x', long)]
     compile: bool,
 
     /// TeX engine
-    #[structopt(short = "e", long, default_value = "xelatex")]
+    #[arg(short = 'e', long, default_value = "xelatex")]
     engine: String,
 
     /// open a viewer
-    #[structopt(long, requires = "compile")]
+    #[arg(long, requires = "compile")]
     open: bool,
 }
 
 fn main() -> Result<()> {
     env_logger::Builder::from_env(Env::default().default_filter_or("info")).init();
 
-    let opt = Opt::from_args();
+    let opt = Opt::parse();
 
     let file_text = fs::read_to_string(&opt.file_path).context("Failed to read file")?;
     let rendered = render::render(&file_text);
